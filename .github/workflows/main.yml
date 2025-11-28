@@ -31,3 +31,4 @@ jobs:
       - name: Deploy or next steps
         if: success()
         run: echo "no critical or high"
+
