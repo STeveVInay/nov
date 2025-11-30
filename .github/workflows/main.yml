@@ -1,26 +1,40 @@
-name: scan docker image
 
-on: 
+name: DevSecOps Pipeline
+
+on:
   push:
-    branches: main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build-and-scan:
+  devsecops:
     runs-on: ubuntu-latest
-
     steps:
-      - name: checkout repo
-        uses: actions/checkout@v3
+      # 1. Checkout code
+      - uses: actions/checkout@v3
 
-      - name: setup docker
-        uses: docker/setup-buildx-action@v2
+      # 2. Secret scanning with Gitleaks
+      - name: Scan for secrets
+        uses: gitleaks/gitleaks-action@v2
 
-      - name: build docker image
-        run:  |
-          docker build -t my-app:latest .
+      # 3. Build Docker image
+      - name: Build Docker image
+        run: docker build -t my-app:latest .
 
-      - name: scan with trivy
+      # 4. Scan image with Trivy
+      - name: Scan Docker image
         uses: aquasecurity/trivy-action@master
-      
-      - name: Deploy or next steps
-        run: echo "Scan completed. Proceeding to next step..."
+        with:
+          image-ref: 'my-app:latest'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '0'  # Continue even if vulnerabilities exist
+
+      # 5. CodeQL Analysis
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
