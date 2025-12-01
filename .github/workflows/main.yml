@@ -1,40 +1,22 @@
-
-name: DevSecOps Pipeline
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+name: Share data between jobs
+on: push
 jobs:
-  devsecops:
+  job_1:
+    name: Upload File
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout code
-      - uses: actions/checkout@v3
-
-      # 2. Secret scanning with Gitleaks
-      - name: Scan for secrets
-        uses: gitleaks/gitleaks-action@v2
-
-      # 3. Build Docker image
-      - name: Build Docker image
-        run: docker build -t my-app:latest .
-
-      # 4. Scan image with Trivy
-      - name: Scan Docker image
-        uses: aquasecurity/trivy-action@master
+      - run: echo "Hello World" > file.txt
+      - uses: actions/upload-artifact@v2
         with:
-          image-ref: 'my-app:latest'
-          severity: 'HIGH,CRITICAL'
-          exit-code: '0'  # Continue even if vulnerabilities exist
+          name: file
+          path: file.txt
 
-      # 5. CodeQL Analysis
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+  job_2:
+    name: Download File
+    runs-on: ubuntu-latest
+    needs: job_1
+    steps:
+      - uses: actions/download-artifact@v2
         with:
-          languages: javascript
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+          name: file
+      - run: cat file.txt
