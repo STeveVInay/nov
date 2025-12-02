@@ -17,3 +17,4 @@ jobs:
           MY_VARIABLE: ${{ vars.ADD }}
         run: |
           echo "Secret (masked): $MY_SECRET"
+          echo "Variables: $MY_VARIABLE"
