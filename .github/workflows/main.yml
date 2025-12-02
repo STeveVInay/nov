@@ -1,22 +1,17 @@
-name: Share data between jobs
-on: push
-jobs:
-  job_1:
-    name: Upload File
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Hello World" > file.txt
-      - uses: actions/upload-artifact@v5
-        with:
-          name: file
-          path: file.txt
+name: Printing ENV data 
 
-  job_2:
-    name: Download File
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  devsecops:
     runs-on: ubuntu-latest
-    needs: job_1
     steps:
-      - uses: actions/download-artifact@v6
-        with:
-          name: file
-      - run: cat file.txt
+      # Print variables
+      - name: Print Secrets and variables data
+        run: echo "Secrets are ${{secrets.NAME}}, variables are ${{vars.ADD}}"
+
+      
