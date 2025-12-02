@@ -1,3 +1,4 @@
+
 name: DevSecOps Pipeline
 
 on:
@@ -10,8 +11,9 @@ jobs:
   devsecops:
     runs-on: ubuntu-latest
     steps:
-      # Print variables
-      - name: Print Secrets and variables data
+      - name: Print Secrets and Variables
+        env:
+          MY_SECRET: ${{ secrets.NAME }}
+          MY_VARIABLE: ${{ vars.ADD }}
         run: |
-          echo "Secrets are ${{secrets.NAME}}"
-          echo "variables are ${{vars.ADD}}"
+          echo "Secret (masked): $MY_SECRET"
