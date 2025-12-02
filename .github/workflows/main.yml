@@ -1,4 +1,4 @@
-name: Printing ENV data 
+name: DevSecOps Pipeline
 
 on:
   push:
@@ -12,6 +12,6 @@ jobs:
     steps:
       # Print variables
       - name: Print Secrets and variables data
-        run: echo "Secrets are ${{secrets.NAME}}, variables are ${{vars.ADD}}"
-
-      
+        run: |
+          echo "Secrets are ${{secrets.NAME}}"
+          echo "variables are ${{vars.ADD}}"
